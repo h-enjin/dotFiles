@@ -1,0 +1,1 @@
+export ZDOTDIR=~/.dotFiles/zsh
