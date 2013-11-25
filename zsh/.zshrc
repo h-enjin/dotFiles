@@ -9,7 +9,7 @@ export LANG=ja_JP.UTF-8
 # export OUTPUT_CHARSET=utf8
 
 ## 履歴など
-HISTFILE=$HOME/.dotFiles/zsh/.zsh_history
+HISTFILE=$HOME/.dotFiles/zsh/history/.zsh_history
 HISTSIZE=10000
 SAVEHIST=100000
 LISTMAX=1000
