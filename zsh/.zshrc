@@ -48,7 +48,7 @@ PROMPT="
 %(?.%{$fg[green]%}.%{$fg[blue]%})%(?!／(*'ヮ')＼ %{$fg[yellow]%}⚡%{$reset_color%}!／(*;-;%)＼? ⚡)%{${reset_color}%} "
 
 # プロンプト指定(コマンドの続き)
-PROMPT2='[%n]> '
+PROMPT2='[%n]⚡ '
 
 # スペルミスの補完時のプロンプト指定
 SPROMPT="%{$fg[red]%}%{$suggest%}／(*'~'%)＼ <ひょっとして %B%r%b %{$fg[red]%}なのかな? [そう!(y), 違う!(n),a,e]:}${reset_color} "
