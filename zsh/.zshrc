@@ -34,6 +34,39 @@ zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 # カラー設定
 autoload -U colors && colors
 
+## Gitのブランチ名などを表示するやつ
+autoload -Uz VCS_INFO_get_data_git; VCS_INFO_get_data_git 2> /dev/null
+
+function rprompt-git-current-branch {
+	local name st color gitdir acrion
+	if [[ "$PWD" =~ '/\.git(/.*)?$' ]]; then
+		return
+	fi
+
+	name=`git rev-parse --abbrev-ref=loose HEAD 2> /dev/null`
+	if [[ -z $name ]]; then
+		return
+	fi
+
+	gitdir=`git rev-parse --git-dir 2> /dev/null`
+	action=`VCS_INFO_git_getaction "$gitdir"` && action="($action)"
+
+	if [[ -e "$gitdir/rprompt-nostatus" ]]; then
+		echo "$name$action"
+		return
+	fi
+
+	st=`git status 2> /dev/null`
+	if [[ "$st" =~ "(?m)^nothing to" ]]; then
+	elif [[ "$st" =~ "(?m)^nothing added" ]]; then
+	elif [[ "$st" =~ "(?m)^# Untracked" ]]; then
+		color=%B%F{red}
+	else
+		color=%F{red}
+	fi
+
+	echo "$color$name$action%f%b"
+}
 ## ホスト毎にホスト名の部分の色を作る http://absolute-area.com/post/6664864690/zsh
 
 # まだよくわかってないので、また今度＾ｑ＾ #
@@ -41,10 +74,11 @@ autoload -U colors && colors
 ## かわいいプロンプトの設定 http://qiita.com/items/c200680c26e509a4f41c
 # PCRE 互換の正規表現使用
 setopt re_match_pcre
+setopt prompt_subst
 
 # プロンプト指定
 PROMPT="
-%{$fg[red]%}%n%{$reset_color%}@%{$fg[cyan]%}%m%{$reset_color%} %{${fg[yellow]}%}%~%{${reset_color}%}
+%{$fg[red]%}%n%{$reset_color%}@%{$fg[cyan]%}%m%{$reset_color%} %{${fg[yellow]}%}%~%{${reset_color}%} [`rprompt-git-current-branch`]
 %(?.%{$fg[green]%}.%{$fg[blue]%})%(?!／(*'ヮ')＼ %{$fg[yellow]%}⚡%{$reset_color%}!／(*;-;%)＼? ⚡)%{${reset_color}%} "
 
 # プロンプト指定(コマンドの続き)
@@ -56,13 +90,13 @@ SPROMPT="%{$fg[red]%}%{$suggest%}／(*'~'%)＼ <ひょっとして %B%r%b %{$fg[
 # 右プロンプト指定
 # 時間表示 #
 RPROMPT="%{$fg[cyan]%}[%*]%{$reset_color%}"
+#RPROMPT='[`rprompt-git-current-branch`%~]'
 
 # 場所表示ver #
 # RPROMPT="%{$fg_bold[white]%}[%{$reset_color%}%{$fg[cyan]%}%~%{$reset_color%}%{$fg_bold[white]%}]%{$reset_color%}"
 
 ## プロンプトのその他設定など
 # 環境変数を通す
-setopt prompt_subst
 
 setopt hist_ignore_all_dups
 setopt hist_ignore_dups
