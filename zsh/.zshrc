@@ -35,40 +35,15 @@ zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 autoload -U colors && colors
 
 ## Gitのブランチ名などを表示するやつ
-autoload -Uz VCS_INFO_get_data_git; VCS_INFO_get_data_git 2> /dev/null
-
-function rprompt-git-current-branch {
-	local name st color gitdir action
-	if [[ "$PWD" =~ '/\.git(/.*)?$' ]]; then
-		return
-	fi
-
-	name=`git rev-parse --abbrev-ref=loose HEAD 2> /dev/null`
-	if [[ -z $name ]]; then
-		return
-	fi
-
-	gitdir=`git rev-parse --git-dir 2> /dev/null`
-	action=`VCS_INFO_git_getaction "$gitdir"` && action="($action)"
-
-	if [[ -e "$gitdir/rprompt-nostatus" ]]; then
-		echo "$name$action"
-		return
-	fi
-
-	st=`git status 2> /dev/null`
-	if [[ "$st" =~ "(?m)^nothing to" ]]; then
-		color=%F{green}
-	elif [[ "$st" =~ "(?m)^nothing added" ]]; then
-		                color=%F{yellow}
-	elif [[ "$st" =~ "(?m)^# Untracked" ]]; then
-		color=%B%F{red}
-	else
-		color=%F{red}
-	fi
-
-	echo "$color$name$action%f%b"
+autoload -Uz vcs_info
+zstyle ':vcs_info:*' formats '(%s)-[%b]'
+zstyle ':vcs_info:*' actionformats '(%s)-[%b|%a]'
+precmd () {
+	psvar=()
+	LANG=en_US.UTF-8 vcs_info
+	[[ -n "$vcs_info_msg_0_" ]] && psvar[1]="$vcs_info_msg_0_"
 }
+
 ## ホスト毎にホスト名の部分の色を作る http://absolute-area.com/post/6664864690/zsh
 
 # まだよくわかってないので、また今度＾ｑ＾ #
@@ -80,7 +55,7 @@ setopt prompt_subst
 
 # プロンプト指定
 PROMPT="
-%{$fg[red]%}%n%{$reset_color%}@%{$fg[cyan]%}%m%{$reset_color%} %{${fg[yellow]}%}%~%{${reset_color}%} [`rprompt-git-current-branch`]
+%{$fg[red]%}%n%{$reset_color%}@%{$fg[cyan]%}%m%{$reset_color%} %{${fg[yellow]}%}%~%{${reset_color}%} %1(v|%F{green}%1v%f|)
 %(?.%{$fg[green]%}.%{$fg[blue]%})%(?!／(*'ヮ')＼ %{$fg[yellow]%}⚡%{$reset_color%}!／(*;-;%)＼? ⚡)%{${reset_color}%} "
 
 # プロンプト指定(コマンドの続き)
