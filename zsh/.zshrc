@@ -38,7 +38,7 @@ autoload -U colors && colors
 autoload -Uz VCS_INFO_get_data_git; VCS_INFO_get_data_git 2> /dev/null
 
 function rprompt-git-current-branch {
-	local name st color gitdir acrion
+	local name st color gitdir action
 	if [[ "$PWD" =~ '/\.git(/.*)?$' ]]; then
 		return
 	fi
