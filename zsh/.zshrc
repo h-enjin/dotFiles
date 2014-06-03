@@ -218,7 +218,7 @@ add-zsh-hook precmd _update_vcs_info_msg
 
 # プロンプト指定
 PROMPT="
-%{$fg[red]%}%n%{$reset_color%}@%{$fg[cyan]%}%m%{$reset_color%} %{${fg[yellow]}%}%~%{${reset_color}%} `prompt-git-current-branch`
+%{$fg[red]%}%n%{$reset_color%}@%{$fg[cyan]%}%m%{$reset_color%} %{${fg[yellow]}%}%~%{${reset_color}%}
 %(?.%{$fg[green]%}.%{$fg[blue]%})%(?!／(*'ヮ')＼ %{$fg[yellow]%}⚡%{$reset_color%}!／(*;-;%)＼? ⚡)%{${reset_color}%} "
 
 # プロンプト指定(コマンドの続き)
